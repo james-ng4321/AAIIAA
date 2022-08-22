@@ -1,0 +1,60 @@
+all access 
+AzureDiagnostics
+| where TimeGenerated > ago(31d)
+| extend HKTimestamp = TimeGenerated + 8h
+| project TimeGenerated, HKTimestamp, ResourceId, Category, ResourceGroup, Resource, ResourceType, requestUri_s, CallerIPAddress,clientInfo_s ,identity_claim_amr_s, identity_claim_appid_g, iddentity_clain_upn_s
+| sort by TimeGenerated, Resource
+
+Access via Azure portal 
+AzureDiagnostics
+| where TimeGenerated > ago(31d) and requestUri_s contains "management.azure.com"
+| extend HKTimestamp = TimeGenerated + 8h
+| project TimeGenerated, HKTimestamp, ResourceId, Category, ResourceGroup, Resource, ResourceType, requestUri_s, CallerIPAddress,clientInfo_s ,identity_claim_amr_s, identity_claim_upn_s
+| sort by TimeGenerated, Resource
+
+Without azure portal access
+AzureDiagnostics
+| where TimeGenerated > ago(31d) and  requestUri_s !contains "management.azure.com"
+| extend HKTimestamp = TimeGenerated + 8h
+| project TimeGenerated, HKTimestamp, ResourceId, Category, ResourceGroup, Resource, ResourceType, requestUri_s, CallerIPAddress,clientInfo_s ,identity_claim_amr_s, identity_claim_upn_s
+| sort by TimeGenerated, Resource
+
+#check whether there is whitelist blocked access 
+AzureDiagnostics
+| where TimeGenerated > ago(31d) and ResultDescription contains "Client address is not authorized"
+| extend HKTimestamp = TimeGenerated + 8h
+|project TimeGenerated, HKTimestamp, ResourceId, Category, ResourceGroup, Resource, ResourceType, requestUri_s, CallerIPAddress,clientInfo_s ,identity_cl
+
+
+
+all access (blob) exclude azure internal service
+StorageBlobLogs
+| union StorageFileLogs, StorageQueueLogs, StorageTableLogs
+| extend HKTimestamp = TimeGenerated + 8h
+| where TimeGenerated > ago(31d) and Uri !contains "sk=system-1"
+| project TimeGenerated, HKTimestamp, AccountName, ServiceType, AuthenticationType, AuthenticationHash, RequesterUpn, StatusCode, StatusText, Uri, CallerIpAddress, UserAgentHeader,ClientRequestId, Category,Type
+| sort by HKTimestamp, AccountName
+
+Exclude internal service and union
+StorageBlobLogs 
+| union StorageFileLogs, StorageQueueLogs, StorageTableLogs
+| extend HKTimestamp = TimeGenerated + 8h
+| where TimeGenerated > ago(31d) and Uri !contains "sk=system-1"
+| project TimeGenerated, HKTimestamp, AccountName, ServiceType, AuthenticationType, AuthenticationHash, RequesterUpn, StatusCode, StatusText, Uri, CallerIpAddress, UserAgentHeader,ClientRequestId, Category,Type
+| sort by HKTimestamp, AccountName
+
+Find anonymous access on blob storage ( as security measure)
+StorageBlobLogs 
+| union StorageFileLogs, StorageQueueLogs, StorageTableLogs
+| extend HKTimestamp = TimeGenerated + 8h
+| where TimeGenerated > ago(4d) and AuthenticationType == "Anonymous" and Uri !contains "sk=system-1"
+| project TimeGenerated, HKTimestamp, AccountName, ServiceType, AuthenticationType, AuthenticationHash, RequesterUpn, StatusCode, StatusText, Uri, CallerIpAddress, UserAgentHeader,ClientRequestId, Category,Type
+| sort by HKTimestamp, AccountName
+
+#check whether there is whitelist blocked access 
+StorageBlobLogs 
+| union StorageFileLogs, StorageQueueLogs, StorageTableLogs
+| extend HKTimestamp = TimeGenerated + 8h
+| where TimeGenerated > ago(31d) and StatusText == "AuthorizationFailure" and Uri !contains "sk=system-1"
+| project TimeGenerated, HKTimestamp, AccountName, ServiceType, AuthenticationType, AuthenticationHash, RequesterUpn, StatusCode, StatusText, Uri, CallerIpAddress, UserAgentHeader,ClientRequestId, Category,Type
+| sort by HKTimestamp, AccountName
