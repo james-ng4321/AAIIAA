@@ -5,7 +5,7 @@
 [string]$WorkspaceResourceID = '/subscriptions/fc6e9d72-7f73-4a05-83de-44204d69d3f7/resourcegroups/rg-go02-sea-d-gis-sasmgmt/providers/microsoft.operationalinsights/workspaces/la-go02-eas-d-gissasmgmt-workspace01'
 [string]$WorkspaceResourceID2 = '/subscriptions/fc6e9d72-7f73-4a05-83de-44204d69d3f7/resourcegroups/rg-go02-sea-d-gis-sasmgmt/providers/microsoft.operationalinsights/workspaces/la-go02-sea-d-gissasmgmt-workspace01'
 # CSV file
-$inputCsvFile = "HK-kv.csv"
+$inputCsvFile = "HK-akv.csv"
 
 # CSV path
 $inputPath = "."
@@ -23,7 +23,7 @@ $Results2 = @()
  foreach ( $Row in $SAlist )
 {
 $Results = Get-AzKeyVault -name $Row.AccountName
-$WorkspaceResourceID3 = Get-AzDiagnosticSetting -ResourceId $Results.ResourceId
+$WorkspaceResourceID3 = Get-AzDiagnosticSetting -ResourceId $Results.ResourceId -WarningAction SilentlyContinue
 $Results2 += New-Object PSObject -property @{ 
 ResourceName = $Results.VaultName
 ResourceGroup = $Results.ResourceGroupName
