@@ -1,6 +1,6 @@
 ﻿# Make sure you are authenticated with 
 # Connect-AzAccount
-#Connect-AzAccount -TenantId 7f2c1900-9fd4-4b89-91d3-79a649996f0a
+#Connect-AzAccount -TenantId 7f2c1900-9fd4-4b89-91d3-79a649996f0a -WarningAction SilentlyContinue
 # LA workspace Resource ID
 [string]$WorkspaceResourceID = '/subscriptions/fc6e9d72-7f73-4a05-83de-44204d69d3f7/resourcegroups/rg-go02-sea-d-gis-sasmgmt/providers/microsoft.operationalinsights/workspaces/la-go02-eas-d-gissasmgmt-workspace01'
 [string]$WorkspaceResourceID2 = '/subscriptions/fc6e9d72-7f73-4a05-83de-44204d69d3f7/resourcegroups/rg-go02-sea-d-gis-sasmgmt/providers/microsoft.operationalinsights/workspaces/la-go02-sea-d-gissasmgmt-workspace01'
