@@ -1,9 +1,9 @@
 ﻿# Make sure you are authenticated with 
 # Connect-AzAccount
 #Connect-AzAccount -TenantId 7f2c1900-9fd4-4b89-91d3-79a649996f0a
-# LA workspace ID
-[string]$WorkspaceResourceID = 'aabecabb-3f4e-4d65-8a7c-17434a094cb6'
-[string]$WorkspaceResourceID2 = 'f486ca19-3cb9-4345-8639-7ccfe1fe149a'
+# LA workspace Resource ID
+[string]$WorkspaceResourceID = '/subscriptions/fc6e9d72-7f73-4a05-83de-44204d69d3f7/resourcegroups/rg-go02-sea-d-gis-sasmgmt/providers/microsoft.operationalinsights/workspaces/la-go02-eas-d-gissasmgmt-workspace01'
+[string]$WorkspaceResourceID2 = '/subscriptions/fc6e9d72-7f73-4a05-83de-44204d69d3f7/resourcegroups/rg-go02-sea-d-gis-sasmgmt/providers/microsoft.operationalinsights/workspaces/la-go02-sea-d-gissasmgmt-workspace01'
 # CSV file
 $inputCsvFile = "HK-kv.csv"
 
@@ -41,4 +41,3 @@ DisableAccess = if(($Results.PublicNetworkAccess -eq "Disable")-and ($Results.Ne
 $path= ".\02 - Validate Result-KV.CSV"
 $Results2 | select ResourceName,ResourceGroup,ResourceID,Location,DiagnosticSetting,AllowPublicAccess,RestrictAccess,DisableAccess,WhitelistIP,Tags | Export-Csv -Path $path -NoTypeInformation
 echo "02 - Validate Result-KV.CSV is generated !"
-
