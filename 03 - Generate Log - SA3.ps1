@@ -27,7 +27,8 @@ StorageBlobLogs
 | union StorageFileLogs, StorageQueueLogs, StorageTableLogs
 | where AccountName contains"+" '"+$Row.AccountName+"'"+"
 | where TimeGenerated > ago(31d) and Uri !contains 'sk=system-1'
-| summarize Count=count() by CallerIpAddress, AccountName, ServiceType, AuthenticationType,StatusText, UserAgentHeader, _ResourceId
+| extend IPaddress = extract('(([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}))',1,CallerIpAddress)
+| summarize Count=count() by IPaddress, AccountName, ServiceType,StatusText, _ResourceId
 | sort by AccountName 
 "
 
@@ -49,7 +50,8 @@ StorageBlobLogs
 | where AccountName contains"+" '"+$Row.AccountName+"'"+"
 | extend HKTimestamp = TimeGenerated + 8h 
 | where TimeGenerated > ago(31d) and Uri !contains 'sk=system-1'
-| project TimeGenerated, HKTimestamp, AccountName, ServiceType, AuthenticationType, AuthenticationHash, RequesterUpn, StatusCode, StatusText, Uri, CallerIpAddress, UserAgentHeader,ClientRequestId, Category,Type 
+| extend IPaddress = extract('(([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}))',1,CallerIpAddress)
+| project TimeGenerated, HKTimestamp, AccountName, ServiceType, AuthenticationType, AuthenticationHash, RequesterUpn, StatusCode, StatusText, Uri, IPaddress, UserAgentHeader,ClientRequestId, Category,Type 
 | sort by HKTimestamp, AccountName 
 "
 
